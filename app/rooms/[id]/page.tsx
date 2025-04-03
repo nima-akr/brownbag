@@ -13,6 +13,7 @@ import {
   Heart,
   SkipForward,
   Pause,
+  Play,
   Volume2,
   MessageSquare,
   Users,
@@ -28,6 +29,69 @@ import Link from "next/link"
 export default function RoomPage() {
   const [message, setMessage] = useState("")
   const [isPlaying, setIsPlaying] = useState(true)
+  const [showAddTrack, setShowAddTrack] = useState(false)
+  const [messages, setMessages] = useState([
+    {
+      name: "ChillMaster",
+      message: "Welcome everyone to the Lo-Fi Study Session! Let's focus and vibe together.",
+      time: "5:32 PM",
+      isHost: true
+    },
+    {
+      name: "BrainWave",
+      message: "This track is perfect for studying 📚",
+      time: "5:35 PM",
+      isHost: false
+    },
+    {
+      name: "MidnightCoder",
+      message: "Added some coding beats to the queue!",
+      time: "5:38 PM",
+      isHost: false
+    },
+    {
+      name: "StudyBuddy",
+      message: "Anyone studying for finals?",
+      time: "5:40 PM",
+      isHost: false
+    },
+    {
+      name: "LoFiLover",
+      message: "🔥🔥🔥",
+      time: "5:42 PM",
+      isHost: false
+    },
+    {
+      name: "ChillMaster",
+      message: "Remember to upvote tracks you like so we can keep the good vibes going!",
+      time: "5:45 PM",
+      isHost: true
+    }
+  ])
+  
+  const handleSendMessage = () => {
+    if (message.trim()) {
+      // Get current time
+      const now = new Date()
+      const hours = now.getHours()
+      const minutes = now.getMinutes()
+      const formattedTime = `${hours % 12 || 12}:${minutes.toString().padStart(2, '0')} ${hours >= 12 ? 'PM' : 'AM'}`
+      
+      // Add new message
+      setMessages([
+        ...messages,
+        {
+          name: "You",
+          message: message.trim(),
+          time: formattedTime,
+          isHost: false
+        }
+      ])
+      
+      // Clear input
+      setMessage('')
+    }
+  }
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
@@ -122,7 +186,7 @@ export default function RoomPage() {
                     className="rounded-full h-12 w-12"
                     onClick={() => setIsPlaying(!isPlaying)}
                   >
-                    {isPlaying ? <Pause className="h-5 w-5" /> : <Pause className="h-5 w-5" />}
+                    {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
                   </Button>
                   <Button variant="outline" size="icon" className="rounded-full h-10 w-10">
                     <SkipForward className="h-5 w-5" />
@@ -141,7 +205,7 @@ export default function RoomPage() {
           <div className="bg-gray-900 rounded-xl p-4">
             <div className="flex justify-between items-center mb-4">
               <h3 className="font-bold">Up Next</h3>
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" onClick={() => setShowAddTrack(!showAddTrack)}>
                 <Plus className="h-4 w-4 mr-1" />
                 Add Track
               </Button>
@@ -197,22 +261,15 @@ export default function RoomPage() {
               <div className="bg-gray-900 rounded-b-xl p-4 flex flex-col h-[500px]">
                 {/* Chat Messages */}
                 <div className="flex-1 overflow-y-auto space-y-4 mb-4">
-                  <ChatMessage
-                    name="ChillMaster"
-                    message="Welcome everyone to the Lo-Fi Study Session! Let's focus and vibe together."
-                    time="5:32 PM"
-                    isHost={true}
-                  />
-                  <ChatMessage name="BrainWave" message="This track is perfect for studying 📚" time="5:35 PM" />
-                  <ChatMessage name="MidnightCoder" message="Added some coding beats to the queue!" time="5:38 PM" />
-                  <ChatMessage name="StudyBuddy" message="Anyone studying for finals?" time="5:40 PM" />
-                  <ChatMessage name="LoFiLover" message="🔥🔥🔥" time="5:42 PM" />
-                  <ChatMessage
-                    name="ChillMaster"
-                    message="Remember to upvote tracks you like so we can keep the good vibes going!"
-                    time="5:45 PM"
-                    isHost={true}
-                  />
+                  {messages.map((msg, i) => (
+                    <ChatMessage
+                      key={i}
+                      name={msg.name}
+                      message={msg.message}
+                      time={msg.time}
+                      isHost={msg.isHost}
+                    />
+                  ))}
                 </div>
 
                 {/* Chat Input */}
@@ -222,11 +279,17 @@ export default function RoomPage() {
                     placeholder="Type a message..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleSendMessage();
+                      }
+                    }}
                   />
                   <Button
                     variant="ghost"
                     size="icon"
                     className="absolute right-1 top-1/2 transform -translate-y-1/2 h-8 w-8 text-gray-400"
+                    onClick={handleSendMessage}
                   >
                     <Send className="h-4 w-4" />
                   </Button>
@@ -272,35 +335,37 @@ export default function RoomPage() {
           </Tabs>
 
           {/* Search Tracks */}
-          <div className="bg-gray-900 rounded-xl p-4">
-            <h3 className="font-bold mb-3">Add to Queue</h3>
-            <div className="relative mb-4">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
-              <Input className="bg-gray-800 border-gray-700 pl-10 w-full" placeholder="Search for tracks..." />
-            </div>
+          {showAddTrack && (
+            <div className="bg-gray-900 rounded-xl p-4">
+              <h3 className="font-bold mb-3">Add to Queue</h3>
+              <div className="relative mb-4">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-4 w-4" />
+                <Input className="bg-gray-800 border-gray-700 pl-10 w-full" placeholder="Search for tracks..." />
+              </div>
 
-            <div className="space-y-2">
-              <p className="text-sm text-gray-400">Recent Searches</p>
-              {[
-                { title: "Ambient Study Mix", artist: "ChillHop Music" },
-                { title: "Productive Morning", artist: "Focus Beats" },
-                { title: "Night Coding Session", artist: "Lo-Fi Producers" },
-              ].map((track, i) => (
-                <div key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-800 cursor-pointer">
-                  <div className="w-8 h-8 bg-gray-800 rounded flex items-center justify-center">
-                    <Music className="h-4 w-4 text-gray-400" />
+              <div className="space-y-2">
+                <p className="text-sm text-gray-400">Recent Searches</p>
+                {[
+                  { title: "Ambient Study Mix", artist: "ChillHop Music" },
+                  { title: "Productive Morning", artist: "Focus Beats" },
+                  { title: "Night Coding Session", artist: "Lo-Fi Producers" },
+                ].map((track, i) => (
+                  <div key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-800 cursor-pointer">
+                    <div className="w-8 h-8 bg-gray-800 rounded flex items-center justify-center">
+                      <Music className="h-4 w-4 text-gray-400" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm truncate">{track.title}</p>
+                      <p className="text-xs text-gray-400 truncate">{track.artist}</p>
+                    </div>
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Plus className="h-4 w-4" />
+                    </Button>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm truncate">{track.title}</p>
-                    <p className="text-xs text-gray-400 truncate">{track.artist}</p>
-                  </div>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </main>
     </div>

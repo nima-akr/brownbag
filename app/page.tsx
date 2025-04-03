@@ -12,9 +12,11 @@ export default function LandingPage() {
           <h1 className="text-2xl font-bold">VIBE.FM</h1>
         </div>
         <div className="flex gap-4">
-          <Button variant="ghost">About</Button>
-          <Button variant="outline">Sign In</Button>
-          <Button className="bg-purple-600 hover:bg-purple-700">Join Now</Button>
+          <Button variant="ghost" className="text-white hover:text-white hover:bg-white/10">About</Button>
+          <Button variant="outline" className="text-white border-white hover:text-white hover:bg-white/10">Sign In</Button>
+          <Link href="/rooms">
+            <Button className="bg-purple-600 hover:bg-purple-700">Join Now</Button>
+          </Link>
         </div>
       </header>
 
@@ -31,11 +33,13 @@ export default function LandingPage() {
             around the world.
           </p>
           <div className="flex gap-4 pt-4">
-            <Button className="bg-purple-600 hover:bg-purple-700 text-lg px-6 py-6">
-              Enter a Room
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button variant="outline" className="text-lg px-6 py-6">
+            <Link href="/rooms">
+              <Button className="bg-purple-600 hover:bg-purple-700 text-lg px-6 py-6">
+                Enter a Room
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+            <Button variant="outline" className="text-lg px-6 py-6 text-white border-white hover:text-white hover:bg-white/10">
               How It Works
             </Button>
           </div>
@@ -103,10 +107,14 @@ export default function LandingPage() {
             started.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button className="bg-white text-purple-900 hover:bg-gray-100 text-lg px-6 py-6">Browse Rooms</Button>
-            <Button variant="outline" className="border-white text-white hover:bg-white/10 text-lg px-6 py-6">
-              Create Your Room
-            </Button>
+            <Link href="/rooms">
+              <Button className="bg-white text-purple-900 hover:bg-gray-100 text-lg px-6 py-6">Browse Rooms</Button>
+            </Link>
+            <Link href="/create-room">
+              <Button variant="outline" className="border-white text-white hover:bg-white/10 text-lg px-6 py-6">
+                Create Your Room
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

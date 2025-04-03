@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -11,7 +12,19 @@ import { ArrowLeft, Music, Users, Settings, Palette, MessageSquare, Zap } from "
 import Link from "next/link"
 
 export default function CreateRoomPage() {
+  const router = useRouter()
   const [selectedTheme, setSelectedTheme] = useState("study")
+  const [roomName, setRoomName] = useState("")
+  const [roomDescription, setRoomDescription] = useState("")
+  
+  const handleCreateRoom = () => {
+    // Create a slug from the room name or use a default
+    const roomSlug = roomName ? roomName.toLowerCase().replace(/\s+/g, '-') : 'new-room'
+    
+    // In a real app, we would save the room data to a database here
+    // For now, we'll just navigate to the new room
+    router.push(`/rooms/${roomSlug}`)
+  }
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -26,7 +39,7 @@ export default function CreateRoomPage() {
             </Link>
             <h1 className="text-xl font-bold">Create a New Room</h1>
           </div>
-          <Button className="bg-purple-600 hover:bg-purple-700">Create Room</Button>
+          <Button className="bg-purple-600 hover:bg-purple-700" onClick={handleCreateRoom}>Create Room</Button>
         </div>
       </header>
 
@@ -49,6 +62,8 @@ export default function CreateRoomPage() {
                     id="room-name"
                     placeholder="e.g., Lo-Fi Study Session"
                     className="bg-gray-800 border-gray-700"
+                    value={roomName}
+                    onChange={(e) => setRoomName(e.target.value)}
                   />
                 </div>
 
@@ -58,6 +73,8 @@ export default function CreateRoomPage() {
                     id="room-description"
                     placeholder="Tell people what your room is about..."
                     className="bg-gray-800 border-gray-700 min-h-[100px]"
+                    value={roomDescription}
+                    onChange={(e) => setRoomDescription(e.target.value)}
                   />
                 </div>
 
@@ -226,7 +243,7 @@ export default function CreateRoomPage() {
                 <div className="absolute bottom-0 left-0 p-4 w-full">
                   <div className="flex justify-between items-end">
                     <div>
-                      <h3 className="text-lg font-bold">Your Room Name</h3>
+                      <h3 className="text-lg font-bold">{roomName || "Your Room Name"}</h3>
                       <p className="text-sm text-gray-300">Hosted by You</p>
                     </div>
                   </div>

@@ -21,10 +21,12 @@ export default function RoomsPage() {
             </div>
           </div>
           <div className="flex gap-3">
-            <Button variant="outline" size="sm">
-              <Plus className="h-4 w-4 mr-2" />
-              Create Room
-            </Button>
+            <Link href="/create-room">
+              <Button variant="outline" size="sm">
+                <Plus className="h-4 w-4 mr-2" />
+                Create Room
+              </Button>
+            </Link>
             <Button className="bg-purple-600 hover:bg-purple-700" size="sm">
               Profile
             </Button>
@@ -143,7 +145,7 @@ export default function RoomsPage() {
 
 function RoomCard({ name, listeners, category, gradient, isLive }) {
   return (
-    <Link href="/rooms/room-id" className="block">
+    <Link href={`/rooms/${name.toLowerCase().replace(/\s+/g, '-')}`} className="block">
       <div
         className={`bg-gradient-to-br ${gradient} rounded-xl h-48 relative overflow-hidden group transition-all hover:scale-[1.02]`}
       >
@@ -171,7 +173,7 @@ function RoomCard({ name, listeners, category, gradient, isLive }) {
 
 function RoomCardCompact({ name, listeners, category }) {
   return (
-    <Link href="/rooms/room-id" className="block">
+    <Link href={`/rooms/${name.toLowerCase().replace(/\s+/g, '-')}`} className="block">
       <div className="bg-gray-900 rounded-lg p-4 transition-all hover:bg-gray-800">
         <Badge className="mb-2 bg-gray-800 text-gray-300">{category}</Badge>
         <h3 className="font-medium mb-2">{name}</h3>
